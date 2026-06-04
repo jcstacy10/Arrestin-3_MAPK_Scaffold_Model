@@ -1,0 +1,7 @@
+protein,gene_name,uniprot_id,string_ensp_id,mw_kDa,hek293_ppm,hek293_nM,hek293_source,hek293_dataset,brain_ppm,brain_nM,brain_source,notes
+Arrestin-3,ARRB2,P32121,9606.ENSP00000403701,46.9,3.21,13.7,HEK293 Geiger 2012,9606-HEK293_Geiger_2012.txt,5.31,22.6,Brain integrated (PaxDb v5.0),Direct measurement in HEK293 dataset
+p38alpha,MAPK14,Q16539,9606.ENSP00000229795,41.3,82.10,397.6,GPM 2014 whole-body (proxy),9606-GPM_201408.txt,2.42,11.7,Brain integrated (PaxDb v5.0),NOT in HEK293 Geiger 2012 (22% coverage); GPM whole-body used as proxy — flag for verification
+JNK3,MAPK10,P53779,9606.ENSP00000378586,52.6,,,not detected,9606-HEK293_Geiger_2012.txt,,,not detected,Neuronal-restricted; below detection in HEK293 and brain bulk proteomics; requires exogenous expression in HEK293 experiments
+ASK1,MAP3K5,Q99683,9606.ENSP00000351908,154.8,6.17,8.0,HEK293 Geiger 2012,9606-HEK293_Geiger_2012.txt,2.16,2.8,Brain integrated (PaxDb v5.0),Direct measurement in HEK293 dataset
+MKK3,MAP2K3,P46734,9606.ENSP00000345083,34.7,1.88,10.8,HEK293 Geiger 2012,9606-HEK293_Geiger_2012.txt,0.84,4.8,Brain integrated (PaxDb v5.0),Direct measurement in HEK293 dataset
+MKK6,MAP2K6,P52564,9606.ENSP00000468348,37.4,8.71,46.6,GPM 2014 whole-body (proxy),9606-GPM_201408.txt,10.50,56.1,Brain integrated (PaxDb v5.0),NOT in HEK293 Geiger 2012 (22% coverage); GPM whole-body used as proxy — flag for verification
