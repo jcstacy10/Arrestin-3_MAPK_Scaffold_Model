@@ -12,9 +12,9 @@ _This file tracks important experimental decisions, assumptions, and open questi
 - If **competitive (same site):** use the competitive binding equation in `equilibrium.py`
 - If **co-occupancy (different sites):** Arr3 can simultaneously scaffold both pathways; the model becomes a co-complex probability problem
 
-**How to answer:** MST competition assay — fix labeled Arr3 + sub-Kd p38a, titrate in JNK3. If JNK3 displaces p38a, sites are shared.
+**How to answer:** MST competition assay — fix labeled Arr3 + sub-Kd p38α, titrate in JNK3. If JNK3 displaces p38α, sites are shared.
 
-**Current assumption:** Competitive (shared site). Based on: both kinases appear to contact the lariat loop region of Arr3. Update when assay is complete.
+**Current assumption:** Competitive (shared site). Based on both kinases engaging overlapping Arr3 regions. Update when assay is complete.
 
 ---
 
@@ -22,49 +22,93 @@ _This file tracks important experimental decisions, assumptions, and open questi
 
 **Why it matters:** If yes, phosphorylation acts as product release (Arr3 is a catalytic scaffold, not a permanent tether). If no, Arr3 may sequester active p38α.
 
-**How to answer:** MST of Arr3-trunc vs. phospho-p38α
+**How to answer:** MST of Arr3-trunc vs. phospho-p38α.
 
-**Current assumption:** Yes, affinity drops to >10 µM upon phosphorylation. Justified by analogy to ppJNK3 (Perry et al. 2019). Flag as assumption in all model outputs.
+**Current assumption:** Yes, affinity drops substantially upon phosphorylation. Working assumption by analogy to ppJNK3; must remain flagged until measured directly.
 
 ---
 
-### 3. What are the cellular concentrations of all proteins in the target cell line?
+### 3. What concentrations should the model use?
 
-**Why it matters:** Equilibrium partitioning is concentration-dependent. Using wrong concentrations can flip model predictions.
+**STATUS: RESOLVED FOR PHASE 1 (2026-06-04)**
 
-**STATUS: PARTIALLY RESOLVED (2026-06-04)**  
-PaxDb v5.0 data retrieved for HEK293 mode. See `data/cellular_concentrations.csv`.  
-Open sub-question: p38α and MKK6 values sourced from GPM whole-body proxy — verify with HEK293-specific proteomics if available. JNK3 absent from HEK293; exogenous expression required.
+The model will use **experimentally tractable in vitro concentration ranges**, not bulk whole-cell proteomics values, as the primary simulation regime.
 
-**Current assumption:** See `model/parameters.py` and `data/cellular_concentrations.csv`.
+**Decision:**
+- Primary simulation mode = **in vitro mode**
+- Default Arr3 scan range = **0 to 5–10 µM**
+- Bulk PaxDb values are retained only as a **reference layer** for later cellular/localization-aware modeling
+
+**Rationale:**
+- Perry et al. (2019, PNAS) used in vitro kinase assays with 5 µM Arr3-trunc and calibrated JARMv1.0 entirely in this regime.
+- Their model predicted an optimal Arr3 concentration of ~0.59 µM for maximal JNK3 phosphorylation.
+- Bulk HEK293 proteomics places Arr3 at ~13.7 nM, which predicts <1% occupancy for µM-range Kd interactions — experimentally indistinguishable from zero.
+- Arrestin localizes strongly upon receptor stimulation, creating scaffold-enriched microenvironments where local concentrations may greatly exceed bulk estimates.
+- Recent work (β-arrestin condensates, Nature 2026) further supports local concentration enrichment and signaling compartmentalization as biologically relevant phenomena.
+
+**Interpretation rule for Phase 1:**
+Predictions describe **scaffold-enriched in vitro / local microenvironment conditions**, not dilute whole-cell average concentrations.
 
 ---
 
 ### 4. What fraction of cellular ASK1 is phosphorylated at baseline vs. after oxidative stress?
 
-**Why it matters:** pASK1 (Kd = 0.32 µM) vs. unphospho-ASK1 (Kd = 11 µM) represent very different Arr3-binding partners. The ratio of pASK1:totalASK1 at any moment is a critical model input.
+**Why it matters:** pASK1 and unphosphorylated ASK1 represent very different Arr3-binding states. The ratio pASK1:totalASK1 is a critical model input that changes dynamically with cellular stress.
 
-**How to answer:** Literature or direct measurement.
-
-**Current assumption:** Not yet parameterized. ASK1 excluded from Phase 1 equilibrium model.
+**Current assumption:** Not yet parameterized. ASK1 is excluded from the first equilibrium model iteration until phospho-state abundances are better constrained.
 
 ---
 
-## Cellular Concentration Data (HEK293 Mode)
+## Bulk Abundance Reference Data (PaxDb)
 
-**Source:** PaxDb v5.0 (pax-db.org, accessed 2026-06-04)  
-**Primary dataset:** Geiger et al. 2012, MCP — HEK293, spectral counting, 22% proteome coverage  
-**Proxy dataset:** GPM Aug 2014 — whole-body human, spectral counting, 97% coverage (used where HEK293 data absent)  
-**Full data file:** `data/cellular_concentrations.csv`
+**Purpose:** Stored for later cellular-reference mode only. NOT the primary Phase 1 modeling concentrations.
 
-### Conversion formula: ppm → nM
+**Source:** PaxDb v5.0
+**Primary HEK293 dataset:** Geiger et al. 2012, spectral counting, ~22% proteome coverage
+**Proxy dataset for absent proteins:** GPM Aug 2014 whole-body, ~97% coverage
+**nM conversion:** 200 pg total protein per HEK293T cell, 1 pL cell volume (OpenCell normalization)
 
-PaxDb ppm values represent (copies of protein X) / (total protein copies) × 10⁶.  
-To convert to intracellular molarity:
+**Important annotation correction (2026-06-04):** ENSP00000262519 was previously listed as ASK1 (MAP3K5). That ENSP maps to SETD1A (histone-lysine N-methyltransferase), not MAP3K5. ASK1 now uses the verified STRING ID ENSP00000351908.
 
-```
-[nM] = ppm × (total_protein_g_per_cell / MW_g_per_mol) / cell_vol_L × 10⁹
-     = ppm × 200 / MW_kDa
+| Protein | Gene | HEK-mode ppm | HEK-mode nM | Source | Notes |
+|---|---|---:|---:|---|---|
+| Arrestin-3 | ARRB2 | 3.21 | 13.7 | HEK293 Geiger 2012 | Directly observed |
+| p38α | MAPK14 | 82.10 | 397.6 | GPM proxy | Absent from HEK293 Geiger 2012 |
+| JNK3 | MAPK10 | n/d | ~0 | Not detected | Neuronal-restricted; exogenous expression required |
+| ASK1 | MAP3K5 | 0.72 | 0.9 | GPM proxy | Corrected; prior value was SETD1A misannotation |
+| MKK3 | MAP2K3 | 1.88 | 10.8 | HEK293 Geiger 2012 | Directly observed |
+| MKK6 | MAP2K6 | 8.71 | 46.6 | GPM proxy | Absent from HEK293 Geiger 2012 |
+| MKK4 | MAP2K4 | 11.00 | 49.7 | GPM proxy | Added for JNK3 cascade completeness |
+| MKK7 | MAP2K7 | 5.88 | 24.8 | GPM proxy | Added for JNK3 cascade completeness |
+
+---
+
+## Decision Log
+
+| Date | Decision | Rationale |
+|---|---|---|
+| 2026-06-04 | Phase 1 model anchored to in vitro concentrations (0–10 µM) | Matches MST/kinase assay regime; experimentally testable |
+| 2026-06-04 | Bulk PaxDb values retained as reference layer only | For later local-concentration/cellular model; not current simulation basis |
+| 2026-06-04 | MKK4 and MKK7 added to bulk reference table | Needed for JNK3 cascade expansion |
+| 2026-06-04 | ASK1 bulk annotation corrected | Previous ENSP mapped to SETD1A, not MAP3K5 |
+| 2026-06-04 | MKK3/6 treated as non-binders in current Arr3 binary affinity set | Supported by current MST/pulldown data; ternary scaffold effects remain open |
+| 2026-06-04 | p38α + JNK3 assumed competitive for first-pass model | Pending direct MST competition assay |
+
+---
+
+## Proteins In-Hand / In Preparation
+
+| Protein | Status | Notes |
+|---|---|---|
+| Arr3-trunc (1–393) | Purified ✓ | Used for MST |
+| Arr3-FL | Purified ✓ | Used for conformational pulldowns |
+| p38α | Purified ✓ | Unphosphorylated |
+| ASK1 | Purified ✓ | Phosphorylated and unphosphorylated preparations available |
+| MKK3 | Purified ✓ | |
+| MKK6 | Purified ✓ | |
+| JNK3 | Purified ✓ | |
+| MKK4 | In prep | Needed for JNK3 cascade kinase assays |
+| MKK7 | In prep | Needed for JNK3 cascade kinase assays |     = ppm × 200 / MW_kDa
 ```
 
 Assumptions (from Cho et al. 2022 OpenCell; Wisniewski et al. 2014 Cell Systems):
