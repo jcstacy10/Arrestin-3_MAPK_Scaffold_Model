@@ -1,0 +1,12 @@
+protein_1,protein_1_state,protein_2,protein_2_state,kd_uM,kd_error_uM,method,source,notes
+Arr3-trunc,basal,p38a,unphosphorylated,2.6,1.0,MST,Stacy_et_al_in_prep,Arr3 residues 1-393
+Arr3-trunc,basal,ASK1,phosphorylated,0.32,,MST,Stacy_et_al_in_prep,Arr3 residues 1-393; manuscript value placeholder updated
+Arr3-trunc,basal,ASK1,unphosphorylated,11.0,2.0,MST,Stacy_et_al_in_prep,Arr3 residues 1-393
+Arr3-trunc,basal,MKK3,unphosphorylated,,,MST,Stacy_et_al_in_prep,No binding detected; Kd above assay range
+Arr3-trunc,basal,MKK6,unphosphorylated,,,MST,Stacy_et_al_in_prep,No binding detected; Kd above assay range
+Arr3-trunc,basal,JNK3,unphosphorylated,1.1,,MST,Perry_et_al_2019,
+Arr3-trunc,basal,JNK3,doubly_phosphorylated,15.0,,MST,Perry_et_al_2019,Approximate value
+Arr3-FL,basal,p38a,unphosphorylated,,,pulldown,Stacy_et_al_in_prep,16.7 +/- 2.6% retention; Kd not directly measured
+Arr3-FL,basal,ASK1,phosphorylated,,,pulldown,Stacy_et_al_in_prep,56.1 +/- 8.7% retention; Kd not directly measured
+Arr3-trunc,IP6_activated,p38a,unphosphorylated,,,pulldown,Stacy_et_al_in_prep,32.6 +/- 2.6% retention; enhanced binding vs basal
+Arr3-trunc,IP6_activated,ASK1,phosphorylated,,,pulldown,Stacy_et_al_in_prep,6.3 +/- 1.2% retention; reduced binding vs basal

@@ -1,0 +1,2 @@
+# Placeholder for in vitro kinase assay data files
+# Format: CSV with columns: time_min, arr3_conc_uM, pp38a_signal, pjnk3_signal, replicate
